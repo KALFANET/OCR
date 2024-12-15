@@ -99,7 +99,8 @@ jobs:
 
         CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
         EOF
-- name: Create frontend files
+        
+    - name: Create frontend files
       run: |
         # Frontend - package.json
         cat << 'EOF' > ${{ github.event.inputs.project_name }}/frontend/package.json
@@ -262,7 +263,7 @@ jobs:
         
         ### דרישות מקדימות
         
-        - Docker & Docker Compose
+        - Docker & Docker Compose V2
         - Node.js 18+
         - Python 3.11+
         - Tesseract OCR
@@ -328,10 +329,14 @@ jobs:
         
         echo "Project structure validation passed"
 
-    - name: Install Docker Compose
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v3
+
+    - name: Install Docker Compose V2
       run: |
-        sudo apt-get update
-        sudo apt-get install -y docker-compose-plugin
+        mkdir -p ~/.docker/cli-plugins/
+        curl -SL https://github.com/docker/compose/releases/download/v2.23.3/docker-compose-linux-x86_64 -o ~/.docker/cli-plugins/docker-compose
+        chmod +x ~/.docker/cli-plugins/docker-compose
         docker compose version
 
     - name: Test Docker Compose file
