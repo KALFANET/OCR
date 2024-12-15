@@ -1,0 +1,33 @@
+name: Run OCR Forms Project
+
+on:
+  push:
+    branches:
+      - main  # הפעלה עם דחיפה לענף main
+  pull_request: # או עם פתיחת Pull Request
+    branches:
+      - main
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      # שלב 1: בדיקת קוד המאגר
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # שלב 2: הגדרת Docker Compose
+      - name: Set up Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install docker-compose -y
+
+      # שלב 3: בניית והפעלת המכולות
+      - name: Build and Run Containers
+        run: |
+          docker-compose up -d
+
+      # שלב 4: בדיקה שה-Backend פעיל
+      - name: Test Backend API
+        run: curl http://localhost:8000/docs
