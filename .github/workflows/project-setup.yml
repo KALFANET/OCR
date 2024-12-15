@@ -99,8 +99,7 @@ jobs:
 
         CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
         EOF
-        
-    - name: Create frontend files
+- name: Create frontend files
       run: |
         # Frontend - package.json
         cat << 'EOF' > ${{ github.event.inputs.project_name }}/frontend/package.json
@@ -248,8 +247,8 @@ jobs:
             
             - name: Build and deploy
               run: |
-                docker-compose build
-                docker-compose up -d
+                docker compose build
+                docker compose up -d
         EOF
         
     - name: Create README
@@ -283,7 +282,7 @@ jobs:
         
         2. הפעלה:
         ```bash
-        docker-compose up --build
+        docker compose up --build
         ```
         
         הממשק זמין ב:
@@ -329,10 +328,16 @@ jobs:
         
         echo "Project structure validation passed"
 
+    - name: Install Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose-plugin
+        docker compose version
+
     - name: Test Docker Compose file
       run: |
         cd ${{ github.event.inputs.project_name }}
-        docker-compose config
+        docker compose config
         if [ $? -ne 0 ]; then
           echo "Error: Invalid docker-compose.yml"
           exit 1
